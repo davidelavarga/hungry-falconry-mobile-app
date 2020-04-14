@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:using_listview/contactlist/modal/feeder.dart';
 
 Future<Map<String, dynamic>> fetchFeeders() async {
   Map<String, String> requestHeaders = {

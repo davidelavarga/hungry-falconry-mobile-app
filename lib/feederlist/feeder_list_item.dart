@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:using_listview/contactlist/modal/feeder.dart';
+import 'package:using_listview/feederlist/modal/feeder.dart';
 
 class FeederListItem extends StatelessWidget {
   final FeederModel _feederModal;
