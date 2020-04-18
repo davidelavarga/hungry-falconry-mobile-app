@@ -3,19 +3,61 @@ import 'package:using_listview/api_requests/schedule.dart';
 import 'package:using_listview/feederlist/modal/feeder.dart';
 import 'package:using_listview/schedulelist/modal/schedule.dart';
 import 'package:using_listview/schedulelist/schedule_list_item.dart';
+import 'package:intl/intl.dart';
 
 class SchedulesScaffold extends StatelessWidget {
   final FeederModel feederModel;
-
+  final DateFormat dateFormat = DateFormat('yyyy-MM-ddTHH:mmZ');
   SchedulesScaffold({@required this.feederModel});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Schedules'),
+        title: Text(feederModel.nameByUser + ' Schedules'),
       ),
       body: ScheduleList(feederModel: this.feederModel),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final selectedDate = await _selectDateTime(context);
+          if (selectedDate == null) return;
+
+          final selectedTime = await _selectTime(context);
+          if (selectedTime == null) return;
+          DateTime timestamp = DateTime(
+              selectedDate.year,
+              selectedDate.month,
+              selectedDate.day,
+              selectedTime.hour,
+              selectedTime.minute,
+          );
+          createSchedule(timestamp.toString(), feederModel.id, false);
+        },
+        child: Icon(Icons.add),
+        backgroundColor: Colors.green,
+      ),
+    );
+  }
+
+  Future<DateTime> _selectDateTime(BuildContext context) => showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: DateTime(DateTime.now().year),
+        lastDate: DateTime(DateTime.now().year + 5),
+        builder: (BuildContext context, Widget child) {
+          return Theme(
+            data: ThemeData.light(),
+            child: child,
+          );
+        },
+      );
+
+  Future<TimeOfDay> _selectTime(BuildContext context) {
+    final now = DateTime.now();
+
+    return showTimePicker(
+      context: context,
+      initialTime: TimeOfDay(hour: now.hour, minute: now.minute),
     );
   }
 }

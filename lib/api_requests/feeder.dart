@@ -4,10 +4,10 @@ import 'package:http/http.dart' as http;
 
 Future<Map<String, dynamic>> fetchFeeders() async {
   Map<String, String> requestHeaders = {
-    'Authorization': 'Token 4ad122c759d37ddfe0acb8cae11652c0f83987e2'
+    'Authorization': 'Token faaecf120a8858e156b7c602fbf45d92a1e95909'
   };
   final response =
-      await http.get('http://10.0.2.2:8000/feeders/', headers: requestHeaders);
+      await http.get('https://hungry-falconry.ew.r.appspot.com/feeders/', headers: requestHeaders);
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
