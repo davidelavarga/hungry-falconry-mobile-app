@@ -1,10 +1,13 @@
 import 'dart:convert';
 
+import 'package:global_configuration/global_configuration.dart';
 import 'package:http/http.dart' as http;
+
+String token = GlobalConfiguration().getString("Token");
 
 Future<Map<String, dynamic>> fetchSchedulesByFeeder(int feeder) async {
   Map<String, String> requestHeaders = {
-    'Authorization': 'Token faaecf120a8858e156b7c602fbf45d92a1e95909'
+    'Authorization': token
   };
   String url = 'https://hungry-falconry.ew.r.appspot.com/feeders/' +
       feeder.toString() +
@@ -34,7 +37,7 @@ Future<http.Response> createSchedule(String timestamp, int feeder, bool done) {
         '/schedules/',
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
-      'Authorization': 'Token faaecf120a8858e156b7c602fbf45d92a1e95909'
+      'Authorization': token
     },
     body: jsonEncode(postSchedule),
   );

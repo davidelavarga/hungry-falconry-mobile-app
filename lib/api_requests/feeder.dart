@@ -1,10 +1,13 @@
 import 'dart:convert';
 
+import 'package:global_configuration/global_configuration.dart';
 import 'package:http/http.dart' as http;
+
+String token = GlobalConfiguration().getString("Token");
 
 Future<Map<String, dynamic>> fetchFeeders() async {
   Map<String, String> requestHeaders = {
-    'Authorization': 'Token faaecf120a8858e156b7c602fbf45d92a1e95909'
+    'Authorization': token
   };
   final response =
       await http.get('https://hungry-falconry.ew.r.appspot.com/feeders/', headers: requestHeaders);
