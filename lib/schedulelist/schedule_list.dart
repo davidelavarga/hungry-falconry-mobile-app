@@ -6,6 +6,8 @@ import 'package:using_listview/schedulelist/modal/schedule.dart';
 import 'package:using_listview/schedulelist/schedule_list_item.dart';
 import 'package:intl/intl.dart';
 
+int scheduleLength = 0;
+
 class ScheduleStateful extends StatefulWidget {
   final FeederModel feederModel;
   ScheduleStateful({@required this.feederModel});
@@ -19,13 +21,18 @@ class _ScheduleState extends State<ScheduleStateful> {
   _ScheduleState({@required this.feederModel});
   @override
   Widget build(BuildContext context) {
+    ScheduleList scheduleList = ScheduleList(feederModel: feederModel);
     return Scaffold(
       appBar: AppBar(
         title: Text(feederModel.nameByUser + ' Schedules'),
       ),
-      body: ScheduleList(feederModel: feederModel),
+      body: scheduleList,
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
+          if (scheduleLength >= feederModel.maxPortions){
+            await _alertNoMoreSchedules();
+            return;
+          }
           final selectedDate = await _selectDateTime(context);
           if (selectedDate == null) return;
 
@@ -44,6 +51,30 @@ class _ScheduleState extends State<ScheduleStateful> {
         child: Icon(Icons.add),
         backgroundColor: Colors.green,
       ),
+    );
+  }
+
+  void _alertNoMoreSchedules() {
+    // flutter defined function
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: new Text("Error", style: TextStyle(color: Colors.red)),
+          content: new Text("Cannot add more schedules"),
+          actions: <Widget>[
+            // usually buttons at the bottom of the dialog
+            new FlatButton(
+              child: new Text("Close"),
+              textColor: Colors.black,
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
     );
   }
 
@@ -96,12 +127,15 @@ class ScheduleList extends StatelessWidget {
               return Center(child: new CircularProgressIndicator());
 
             case ConnectionState.done:
+              scheduleLength = 0;
               if (snapshot.data != null) {
                 List<ScheduleModel> schedules =
                     new List(snapshot.data["results"].length);
                 for (var i = 0; i < snapshot.data["results"].length; i++) {
                   schedules[i] =
                       ScheduleModel.fromJson(snapshot.data["results"][i]);
+
+                  if (!schedules[i].done) scheduleLength++;
                 }
 
                 return ListView.builder(
