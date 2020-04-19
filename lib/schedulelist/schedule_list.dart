@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:using_listview/api_requests/schedule.dart';
 import 'package:using_listview/feederlist/modal/feeder.dart';
@@ -5,18 +6,24 @@ import 'package:using_listview/schedulelist/modal/schedule.dart';
 import 'package:using_listview/schedulelist/schedule_list_item.dart';
 import 'package:intl/intl.dart';
 
-class SchedulesScaffold extends StatelessWidget {
+class ScheduleStateful extends StatefulWidget {
   final FeederModel feederModel;
-  final DateFormat dateFormat = DateFormat('yyyy-MM-ddTHH:mmZ');
-  SchedulesScaffold({@required this.feederModel});
+  ScheduleStateful({@required this.feederModel});
+  @override
+  _ScheduleState createState() => _ScheduleState(feederModel: this.feederModel);
+}
 
+class _ScheduleState extends State<ScheduleStateful> {
+  FeederModel feederModel;
+  final DateFormat dateFormat = DateFormat('yyyy-MM-ddTHH:mmZ');
+  _ScheduleState({@required this.feederModel});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text(feederModel.nameByUser + ' Schedules'),
       ),
-      body: ScheduleList(feederModel: this.feederModel),
+      body: ScheduleList(feederModel: feederModel),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final selectedDate = await _selectDateTime(context);
@@ -25,18 +32,25 @@ class SchedulesScaffold extends StatelessWidget {
           final selectedTime = await _selectTime(context);
           if (selectedTime == null) return;
           DateTime timestamp = DateTime(
-              selectedDate.year,
-              selectedDate.month,
-              selectedDate.day,
-              selectedTime.hour,
-              selectedTime.minute,
+            selectedDate.year,
+            selectedDate.month,
+            selectedDate.day,
+            selectedTime.hour,
+            selectedTime.minute,
           );
-          createSchedule(timestamp.toString(), feederModel.id, false);
+          await createSchedule(timestamp.toString(), feederModel.id, false);
+          _refreshSchedules(); // Date and Time have value
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.green,
       ),
     );
+  }
+
+  void _refreshSchedules() {
+    setState(() {
+      feederModel = this.feederModel;
+    });
   }
 
   Future<DateTime> _selectDateTime(BuildContext context) => showDatePicker(
@@ -51,7 +65,6 @@ class SchedulesScaffold extends StatelessWidget {
           );
         },
       );
-
   Future<TimeOfDay> _selectTime(BuildContext context) {
     final now = DateTime.now();
 
@@ -100,7 +113,7 @@ class ScheduleList extends StatelessWidget {
                     });
               }
               // here your snapshot data is null so SharedPreferences has no data...
-              return Text("No data was loaded from SharedPreferences");
+              return Text("No data was loaded from feeders");
           } //end switch
         },
       ),

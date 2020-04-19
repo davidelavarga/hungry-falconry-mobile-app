@@ -25,7 +25,7 @@ class FeederListItem extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) =>
-                  SchedulesScaffold(feederModel: _feederModal),
+                  ScheduleStateful(feederModel: _feederModal),
             ),
           );
         });
