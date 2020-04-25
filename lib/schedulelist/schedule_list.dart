@@ -143,11 +143,10 @@ class ScheduleList extends StatelessWidget {
                     itemCount: schedules
                         .length, // getting map length you can use keyList.length too
                     itemBuilder: (BuildContext context, int index) {
-                      return ScheduleListItem(schedules[index]);
+                      return ScheduleListItem(schedules[index], feederModel);
                     });
               }
-              // here your snapshot data is null so SharedPreferences has no data...
-              return Text("No data was loaded from feeders");
+              return Text("No data was loaded from schedules");
           } //end switch
         },
       ),
