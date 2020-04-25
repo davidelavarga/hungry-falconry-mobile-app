@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:using_listview/api_requests/schedule.dart';
 import 'package:using_listview/feederlist/modal/feeder.dart';
 import 'package:using_listview/schedulelist/modal/schedule.dart';
-import 'package:intl/intl.dart';
 
 int scheduleLength = 0;
 
@@ -16,7 +15,6 @@ class ScheduleStateful extends StatefulWidget {
 
 class _ScheduleState extends State<ScheduleStateful> {
   FeederModel feederModel;
-  final DateFormat dateFormat = DateFormat('yyyy-MM-ddTHH:mmZ');
   _ScheduleState({@required this.feederModel});
   @override
   Widget build(BuildContext context) {
@@ -55,13 +53,29 @@ class _ScheduleState extends State<ScheduleStateful> {
                           .length, // getting map length you can use keyList.length too
                       itemBuilder: (BuildContext context, int index) {
                         ScheduleModel currentScheduleItem = schedules[index];
+                        var parsedDate = DateTime.parse(
+                            currentScheduleItem.timestamp.toUpperCase());
+                        String day = parsedDate.day.toString();
+                        String month = parsedDate.month.toString();
+                        String hour = parsedDate.hour.toString();
+                        String min = parsedDate.minute.toString();
+
                         return ListTile(
-                          leading: CircleAvatar(
-                            backgroundColor: Colors.brown.shade800,
-                            child: Text(""),
-                          ),
-                          title:
-                              Text(currentScheduleItem.timestamp.toUpperCase()),
+                          title: RichText(
+                              text: TextSpan(
+                                  // set the default style for the children TextSpans
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .body1
+                                      .copyWith(fontSize: 25),
+                                  children: [
+                                TextSpan(
+                                    text: day + "/" + month + " ",
+                                    style: TextStyle(color: Colors.grey)),
+                                TextSpan(
+                                  text: hour + ":" + min,
+                                ),
+                              ])),
                           trailing: Icon(
                             currentScheduleItem.done
                                 ? Icons.done
@@ -154,7 +168,12 @@ class _ScheduleState extends State<ScheduleStateful> {
             ),
             // usually buttons at the bottom of the dialog
             new FlatButton(
-              child: new Text("Close"),
+              child: new Text(
+                "Close",
+                style: TextStyle(
+                  fontSize: 20.0,
+                ),
+              ),
               textColor: Colors.blue,
               onPressed: () {
                 Navigator.of(context).pop();
