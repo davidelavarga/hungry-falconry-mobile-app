@@ -1,12 +1,14 @@
 import 'dart:convert';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:http/http.dart' as http;
 
 String host = GlobalConfiguration().getString("Host");
-String token = GlobalConfiguration().getString("Token");
 
 Future<Map<String, dynamic>> fetchSchedulesByFeeder(int feeder) async {
+  final storage = FlutterSecureStorage();
+  String token = await storage.read(key: "Token");
   Map<String, String> requestHeaders = {'Authorization': token};
   String url = host + '/feeders/' + feeder.toString() + '/schedules/';
   final response = await http.get(url, headers: requestHeaders);
@@ -22,7 +24,9 @@ Future<Map<String, dynamic>> fetchSchedulesByFeeder(int feeder) async {
   }
 }
 
-Future<http.Response> createSchedule(String timestamp, int feeder, bool done) {
+Future<http.Response> createSchedule(String timestamp, int feeder, bool done) async {
+  final storage = FlutterSecureStorage();
+  String token = await storage.read(key: "Token");
   Map<String, dynamic> postSchedule = {
     'timestamp': timestamp,
     'done': done,
@@ -38,7 +42,9 @@ Future<http.Response> createSchedule(String timestamp, int feeder, bool done) {
   );
 }
 
-Future<http.Response> deleteSchedule(int feeder, int schedule) {
+Future<http.Response> deleteSchedule(int feeder, int schedule) async {
+  final storage = FlutterSecureStorage();
+  String token = await storage.read(key: "Token");
   String url = host +
       '/feeders/' +
       feeder.toString() +
