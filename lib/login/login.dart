@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:using_listview/api_requests/login.dart';
 import 'package:using_listview/feederlist/feeder_list.dart';
 
@@ -20,8 +21,23 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   bool _isLogin = false;
 
+  final _storage = FlutterSecureStorage();
   final usernameController = TextEditingController();
   final passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _readToken();
+  }
+  Future<Null> _readToken() async {
+    String token = await _storage.read(key: "Token");
+    if (token != null || token != "") {
+      _isLogin =  true;
+    } else {
+      _isLogin =  false;
+    }
+  }
 
   @override
   void dispose() {
@@ -57,7 +73,7 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () async {
           bool allow =
               await login(usernameController.text, passwordController.text);
-          if(allow){
+          if (allow) {
             setState(() {
               _isLogin = true;
             });
