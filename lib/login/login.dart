@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:using_listview/api_requests/login.dart';
 import 'package:using_listview/feederlist/feeder_list.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -65,6 +66,7 @@ class _LoginScreenState extends State<LoginScreen>
                   onSaved: (text) => _username = text,
                 ),
                 TextFormField(
+                  obscureText: true,
                   validator: (text) {
                     if (text.length == 0) {
                       return "Insert password";
@@ -83,13 +85,15 @@ class _LoginScreenState extends State<LoginScreen>
                   onSaved: (text) => _password = text,
                 ),
                 IconButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (_key.currentState.validate()) {
                       _key.currentState.save();
-
-                      setState(() {
-                        _isLogin = true;
-                      });
+                      bool allow = await login(_username, _password);
+                      if (allow) {
+                        setState(() {
+                          _isLogin = true;
+                        });
+                      }
 //                      Navigator.of(context).push(HomeScreen.route(mensaje));
                     }
                   },
