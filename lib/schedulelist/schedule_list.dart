@@ -56,9 +56,21 @@ class _ScheduleState extends State<ScheduleStateful> {
                         var parsedDate = DateTime.parse(
                             currentScheduleItem.timestamp.toUpperCase());
                         String day = parsedDate.day.toString();
+                        if (parsedDate.day < 10) {
+                          day = "0" + day;
+                        }
                         String month = parsedDate.month.toString();
+                        if (parsedDate.month < 10) {
+                          month = "0" + month;
+                        }
                         String hour = parsedDate.hour.toString();
+                        if (parsedDate.hour < 10) {
+                          hour = "0" + hour;
+                        }
                         String min = parsedDate.minute.toString();
+                        if (parsedDate.minute < 10) {
+                          min = "0" + min;
+                        }
 
                         return ListTile(
                           title: RichText(
