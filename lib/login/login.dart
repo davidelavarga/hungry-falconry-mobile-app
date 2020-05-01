@@ -83,7 +83,6 @@ class _LoginScreenState extends State<LoginScreen>
                   onSaved: (text) => _password = text,
                 ),
                 IconButton(
-                  padding: const EdgeInsets.only(top: 40.0),
                   onPressed: () async {
                     if (_key.currentState.validate()) {
                       _key.currentState.save();
