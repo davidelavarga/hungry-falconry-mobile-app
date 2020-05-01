@@ -58,7 +58,6 @@ class _LoginScreenState extends State<LoginScreen>
                   textAlign: TextAlign.left,
                   decoration: InputDecoration(
                     hintText: 'Username',
-                    labelText: 'Username',
                     counterText: '',
                     icon: Icon(Icons.account_box,
                         size: 32.0, color: Colors.blue[800]),
@@ -78,13 +77,13 @@ class _LoginScreenState extends State<LoginScreen>
                   textAlign: TextAlign.left,
                   decoration: InputDecoration(
                     hintText: 'Password',
-                    labelText: 'Password',
                     counterText: '',
                     icon: Icon(Icons.lock, size: 32.0, color: Colors.blue[800]),
                   ),
                   onSaved: (text) => _password = text,
                 ),
                 IconButton(
+                  padding: const EdgeInsets.only(top: 40.0),
                   onPressed: () async {
                     if (_key.currentState.validate()) {
                       _key.currentState.save();
