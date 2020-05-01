@@ -9,23 +9,23 @@ class FeederListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String portionsStatus = _feederModal.currentPortions.toString() +
-        "/" +
-        _feederModal.maxPortions.toString();
+    String portionsStatus =
+        "Max. portions: " + _feederModal.maxPortions.toString();
     return ListTile(
-        leading: CircleAvatar(child: Text(_feederModal.nameByUser[0])),
-        title: Text(_feederModal.nameByUser),
-        subtitle: Text(portionsStatus),
-        trailing: Icon(
-          Icons.access_time,
-          color: Colors.black26,
+        leading: CircleAvatar(
+          backgroundColor: Colors.green,
+            foregroundColor: Colors.white,
+            child: Text(_feederModal.nameByUser[0])),
+        title: Text(
+          _feederModal.nameByUser,
+          style: TextStyle(fontSize: 20),
         ),
+        subtitle: Text(portionsStatus),
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) =>
-                  ScheduleStateful(feederModel: _feederModal),
+              builder: (context) => ScheduleStateful(feederModel: _feederModal),
             ),
           );
         });
