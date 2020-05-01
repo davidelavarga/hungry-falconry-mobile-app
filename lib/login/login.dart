@@ -1,127 +1,109 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:using_listview/api_requests/login.dart';
 import 'package:using_listview/feederlist/feeder_list.dart';
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-  final String title;
+class LoginScreen extends StatefulWidget {
+  static Route<dynamic> route() {
+    return MaterialPageRoute(
+      builder: (context) => LoginScreen(),
+    );
+  }
+
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _LoginScreenState createState() => _LoginScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _LoginScreenState extends State<LoginScreen>
+    with SingleTickerProviderStateMixin {
+  AnimationController controller;
+  Animation<double> animation;
+
+  GlobalKey<FormState> _key = GlobalKey();
+
+  RegExp emailRegExp =
+      new RegExp(r'^\w+[\w-\.]*\@\w+((-\w+)|(\w*))\.[a-z]{2,3}$');
+  RegExp contRegExp = new RegExp(r'^([1-zA-Z0-1@.\s]{1,255})$');
+  String _username;
+  String _password;
+
   bool _isLogin = false;
-
-  final _storage = FlutterSecureStorage();
-  final usernameController = TextEditingController();
-  final passwordController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _readToken();
-  }
-  Future<Null> _readToken() async {
-    String token = await _storage.read(key: "Token");
-    if (token != null || token != "") {
-      _isLogin =  true;
-    } else {
-      _isLogin =  false;
-    }
-  }
-
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    usernameController.dispose();
-    passwordController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    final usernameField = TextField(
-      controller: usernameController,
-      obscureText: false,
-      decoration: InputDecoration(
-        contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        hintText: "Username",
-      ),
-    );
-    final passwordField = TextField(
-      controller: passwordController,
-      obscureText: true,
-      decoration: InputDecoration(
-        contentPadding: EdgeInsets.fromLTRB(20.0, 15.0, 20.0, 15.0),
-        hintText: "Password",
-      ),
-    );
-    final loginButon = Material(
-      elevation: 5.0,
-      borderRadius: BorderRadius.circular(30.0),
-      color: Colors.blue,
-      child: MaterialButton(
-        onPressed: () async {
-          bool allow =
-              await login(usernameController.text, passwordController.text);
-          if (allow) {
-            setState(() {
-              _isLogin = true;
-            });
-          }
-        },
-        child: Text(
-          "Login",
-          textAlign: TextAlign.center,
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-    );
-
     return Scaffold(
-      body: _isLogin
-          ? FeederList()
-          : Center(
-              child: Container(
-                color: Colors.white,
-                child: Padding(
-                  padding: const EdgeInsets.all(36.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 155.0,
-                        child: Image.asset(
-                          "assets/logo.png",
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                      SizedBox(height: 45.0),
-                      usernameField,
-                      SizedBox(height: 25.0),
-                      passwordField,
-                      SizedBox(
-                        height: 35.0,
-                      ),
-                      loginButon,
-                      SizedBox(
-                        height: 15.0,
-                      ),
-                    ],
+      body: _isLogin ? FeederList() : loginForm(),
+//      body: loginForm(),
+    );
+  }
+
+  Widget loginForm() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Container(
+          margin: const EdgeInsets.only(left: 30.0),
+          width: 300.0, //size.width * .6,
+          child: Form(
+            key: _key,
+            child: Column(
+              children: <Widget>[
+                TextFormField(
+                  validator: (text) {
+                    if (text.length == 0) {
+                      return "Insert username";
+                    }
+                    return null;
+                  },
+                  maxLength: 50,
+                  textAlign: TextAlign.left,
+                  decoration: InputDecoration(
+                    hintText: 'Username',
+                    labelText: 'Username',
+                    counterText: '',
+                    icon: Icon(Icons.account_box,
+                        size: 32.0, color: Colors.blue[800]),
                   ),
+                  onSaved: (text) => _username = text,
                 ),
-              ),
+                TextFormField(
+                  validator: (text) {
+                    if (text.length == 0) {
+                      return "Insert password";
+                    }
+                    return null;
+                  },
+                  keyboardType: TextInputType.text,
+                  maxLength: 20,
+                  textAlign: TextAlign.left,
+                  decoration: InputDecoration(
+                    hintText: 'Password',
+                    labelText: 'Password',
+                    counterText: '',
+                    icon: Icon(Icons.lock, size: 32.0, color: Colors.blue[800]),
+                  ),
+                  onSaved: (text) => _password = text,
+                ),
+                IconButton(
+                  onPressed: () {
+                    if (_key.currentState.validate()) {
+                      _key.currentState.save();
+
+                      setState(() {
+                        _isLogin = true;
+                      });
+//                      Navigator.of(context).push(HomeScreen.route(mensaje));
+                    }
+                  },
+                  icon: Icon(
+                    Icons.arrow_forward,
+                    size: 42.0,
+                    color: Colors.blue[800],
+                  ),
+                )
+              ],
             ),
+          ),
+        ),
+      ],
     );
   }
 }

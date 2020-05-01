@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:global_configuration/global_configuration.dart';
-import 'feederlist/feeder_list.dart';
 import 'config/app_settings.config.dart';
 import 'login/login.dart';
 
@@ -12,7 +11,7 @@ void main() {
       appBar: AppBar(
         title: Text("Hungry Falconry"),
       ),
-      body: MyHomePage(),
+      body: LoginScreen(),
     ),
   ));
 }
