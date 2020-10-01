@@ -1,12 +1,14 @@
 import 'dart:convert';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:global_configuration/global_configuration.dart';
 import 'package:http/http.dart' as http;
 
 String host = GlobalConfiguration().getString("Host");
-String token = GlobalConfiguration().getString("Token");
 
 Future<Map<String, dynamic>> fetchFeeders() async {
+  final storage = FlutterSecureStorage();
+  String token = await storage.read(key: "Token");
   Map<String, String> requestHeaders = {'Authorization': token};
   final response = await http.get(host + '/feeders/', headers: requestHeaders);
   if (response.statusCode == 200) {
