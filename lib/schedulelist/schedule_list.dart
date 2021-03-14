@@ -8,14 +8,18 @@ int scheduleLength = 0;
 
 class ScheduleStateful extends StatefulWidget {
   final FeederModel feederModel;
+
   ScheduleStateful({@required this.feederModel});
+
   @override
   _ScheduleState createState() => _ScheduleState(feederModel: this.feederModel);
 }
 
 class _ScheduleState extends State<ScheduleStateful> {
   FeederModel feederModel;
+
   _ScheduleState({@required this.feederModel});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +28,7 @@ class _ScheduleState extends State<ScheduleStateful> {
       ),
       body: Container(
         child: FutureBuilder(
-          future: fetchSchedulesByFeeder(feederModel.id),
+          future: fetchSchedulesByFeeder(feederModel.hubId, feederModel.id),
           // ignore: missing_return
           builder: (context, snapshot) {
             switch (snapshot.connectionState) {
@@ -49,8 +53,8 @@ class _ScheduleState extends State<ScheduleStateful> {
 
                   return ListView.builder(
                       itemExtent: 90,
-                      itemCount: schedules
-                          .length, // getting map length you can use keyList.length too
+                      itemCount: schedules.length,
+                      // getting map length you can use keyList.length too
                       itemBuilder: (BuildContext context, int index) {
                         ScheduleModel currentScheduleItem = schedules[index];
                         var parsedDate = DateTime.parse(
@@ -97,8 +101,8 @@ class _ScheduleState extends State<ScheduleStateful> {
                                 : Colors.black26,
                           ),
                           onLongPress: () => {
-                            _alertDeleteSchedule(
-                                context, feederModel.id, currentScheduleItem.id)
+                            _alertDeleteSchedule(context, feederModel.hubId,
+                                feederModel.id, currentScheduleItem.id)
                           },
                         );
                       });
@@ -126,7 +130,8 @@ class _ScheduleState extends State<ScheduleStateful> {
             selectedTime.hour,
             selectedTime.minute,
           );
-          await createSchedule(timestamp.toString(), feederModel.id, false);
+          await createSchedule(
+              timestamp.toString(), feederModel.hubId, feederModel.id, false);
           _refreshSchedules(); // Date and Time have value
         },
         child: Icon(Icons.add),
@@ -159,7 +164,7 @@ class _ScheduleState extends State<ScheduleStateful> {
     );
   }
 
-  void _alertDeleteSchedule(BuildContext context, int feeder, int schedule) {
+  void _alertDeleteSchedule(BuildContext context, int hubId, int feeder, int schedule) {
     // flutter defined function
     showDialog(
       context: context,
@@ -173,7 +178,7 @@ class _ScheduleState extends State<ScheduleStateful> {
               child: new Text("Delete"),
               textColor: Colors.red,
               onPressed: () async {
-                await deleteSchedule(feeder, schedule);
+                await deleteSchedule(hubId, feeder, schedule);
                 _refreshSchedules();
                 Navigator.of(context).pop();
               },
@@ -215,6 +220,7 @@ class _ScheduleState extends State<ScheduleStateful> {
           );
         },
       );
+
   Future<TimeOfDay> _selectTime(BuildContext context) {
     final now = DateTime.now();
 
