@@ -24,9 +24,9 @@ class FeederList extends StatelessWidget {
             case ConnectionState.done:
               if (snapshot.data != null) {
                 List<FeederModel> feeders =
-                    new List(snapshot.data["results"].length);
-                for (var i = 0; i < snapshot.data["results"].length; i++) {
-                  feeders[i] = FeederModel.fromJson(snapshot.data["results"][i]);
+                    new List(snapshot.data.length);
+                for (var i = 0; i < snapshot.data.length; i++) {
+                  feeders[i] = FeederModel.fromJson(snapshot.data[i]);
                 }
 
                 return ListView.builder(
@@ -38,7 +38,7 @@ class FeederList extends StatelessWidget {
                     });
               }
               // here your snapshot data is null so SharedPreferences has no data...
-              return Text("No data was loaded from SharedPreferences");
+              return Text("No data was loaded!");
           } //end switch
         },
       ),
