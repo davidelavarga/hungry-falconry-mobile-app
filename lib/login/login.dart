@@ -59,7 +59,7 @@ class _LoginScreenState extends State<LoginScreen>
                     hintText: 'Username',
                     counterText: '',
                     icon: Icon(Icons.account_box,
-                        size: 32.0, color: Colors.blue[800]),
+                        size: 32.0, color: Colors.blueGrey[700]),
                   ),
                   onSaved: (text) => _username = text,
                 ),
@@ -77,7 +77,7 @@ class _LoginScreenState extends State<LoginScreen>
                   decoration: InputDecoration(
                     hintText: 'Password',
                     counterText: '',
-                    icon: Icon(Icons.lock, size: 32.0, color: Colors.blue[800]),
+                    icon: Icon(Icons.lock, size: 32.0, color: Colors.blueGrey[700]),
                   ),
                   onSaved: (text) => _password = text,
                 ),
@@ -97,7 +97,7 @@ class _LoginScreenState extends State<LoginScreen>
                   icon: Icon(
                     Icons.arrow_forward,
                     size: 42.0,
-                    color: Colors.blue[800],
+                    color: Colors.blueGrey[700],
                   ),
                 )
               ],
